@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { AiOutlineMenu } from "react-icons/ai";
 import useAuth from "../../../hooks/useAuth";
 import avatarImg from "../../../assets/images/placeholder.jpg";
+import logo from '../../../assets/images/logo.png'
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -16,7 +17,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link to="/">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtd2frTY2AUuz7UmqcUNqYCuMH8MEol9jxYg&s"
+                src={logo}
                 alt="logo"
                 width="50"
                 height="50"
