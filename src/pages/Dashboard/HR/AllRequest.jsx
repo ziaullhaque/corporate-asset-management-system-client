@@ -7,7 +7,7 @@ const AllRequest = () => {
       {/* Title */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-primary inline-block border-b-2 border-primary pb-1">
-          All Request
+          All Requests
         </h2>
       </div>
 
