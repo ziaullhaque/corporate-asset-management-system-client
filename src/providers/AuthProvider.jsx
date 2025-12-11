@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -34,7 +35,7 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, googleProvider);
   };
 
-  const logOut = async () => {
+  const logOut = () => {
     setLoading(true);
     return signOut(auth);
   };
@@ -45,6 +46,21 @@ const AuthProvider = ({ children }) => {
       photoURL: photo,
     });
   };
+
+  // reset password
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
+  // // User state observe
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+  //     setUser(currentUser);
+  //     setLoading(false);
+  //   });
+
+  //   return unsubscribe;
+  // }, []);
 
   // onAuthStateChange
   useEffect(() => {
@@ -68,6 +84,7 @@ const AuthProvider = ({ children }) => {
     signInWithGoogle,
     logOut,
     updateUserProfile,
+    resetPassword,
   };
 
   return (
