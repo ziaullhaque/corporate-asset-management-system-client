@@ -44,7 +44,7 @@ const Contact = () => {
               whileTap={{ scale: 0.98 }}
               className="bg-white text-[#006d6f] font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition flex items-center gap-2 mx-auto"
             >
-              Get Started Toda <FaArrowRight />
+              Get Started Today <FaArrowRight />
             </motion.button>
           </motion.div>
         </div>

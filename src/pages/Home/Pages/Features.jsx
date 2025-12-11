@@ -51,7 +51,7 @@ const Features = () => {
             Key Features of <span className="text-[#006d6f]">AssetManagement</span>
           </h2>
           <p className="text-gray-400 mt-2">
-            A powerful suite of tools for HR & enterprises
+            A powerful suite of tools for HR & enterprise
           </p>
         </div>
 
