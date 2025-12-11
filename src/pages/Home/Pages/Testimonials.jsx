@@ -91,7 +91,7 @@ const Testimonials = () => {
         </h3>
 
         <p className="text-[#606060] max-w-2xl mx-auto">
-          Trusted by thousands — here’s how AssetVerse is helping organization
+          Trusted by thousands — here’s how AssetVerse is helping organizations
           grow faster.
         </p>
       </div>
