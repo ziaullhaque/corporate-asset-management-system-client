@@ -86,7 +86,7 @@ const Packages = () => {
                 
               `}
             >
-              Get Started <ArrowRight size={14} />
+              Get Starte <ArrowRight size={14} />
             </button>
           </motion.div>
         ))}
