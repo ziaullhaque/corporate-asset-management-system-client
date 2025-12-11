@@ -149,7 +149,7 @@ const AddAsset = () => {
             >
               <option value="">Select type</option>
               <option value="hardware">Hardware</option>
-              <option value="software">Software</option>
+              <option value="software">Softwar</option>
               <option value="license">License</option>
             </select>
 
