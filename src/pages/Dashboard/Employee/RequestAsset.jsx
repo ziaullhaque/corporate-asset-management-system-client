@@ -7,7 +7,7 @@ const RequestAsset = () => {
       {/* Title */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-primary border-b-2 border-transparent inline-block pb-1 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-primary/30">
-          Request Asse
+          Request Asset
         </h2>
       </div>
 
