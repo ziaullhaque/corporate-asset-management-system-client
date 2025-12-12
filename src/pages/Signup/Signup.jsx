@@ -31,41 +31,99 @@ const SignUp = () => {
 
   const userType = watch("userType");
 
+  // const onSubmit = async (data) => {
+  //   try {
+  //     const profileImageURL = await imageUpload(data.image[0]);
+  //     const result = await createUser(data.email, data.password);
+
+  //     let userData = {
+  //       name: data.name,
+  //       email: data.email,
+  //       image: profileImageURL,
+  //       dateOfBirth: data.dateOfBirth,
+  //     };
+
+  //     if (data.userType === "hr") {
+  //       const companyLogoURL = await imageUpload(data.companyLogo[0]);
+  //       userData = {
+  //         ...userData,
+  //         role: "hr",
+  //         companyName: data.companyName,
+  //         companyLogo: companyLogoURL,
+  //         packageLimit: 5,
+  //         currentEmployees: 0,
+  //         subscription: "basic",
+  //       };
+  //     } else {
+  //       userData.role = "employee";
+  //     }
+  //     console.log(userData);
+
+  //     await updateUserProfile(data.name, profileImageURL);
+
+  //     Swal.fire({ title: "Signup Successful", icon: "success" });
+  //     navigate(from, { replace: true });
+  //   } catch (err) {
+  //     Swal.fire({ icon: "error", title: err?.message });
+  //   }
+  // };
   const onSubmit = async (data) => {
     try {
+      // 1️⃣ Upload Profile Image
       const profileImageURL = await imageUpload(data.image[0]);
+
+      // 2️⃣ Create Firebase User
       const result = await createUser(data.email, data.password);
 
+      // 3️⃣ Update Firebase Profile (Name + Photo)
+      await updateUserProfile(data.name, profileImageURL);
+
+      // 4️⃣ Prepare User Data for Server
       let userData = {
         name: data.name,
         email: data.email,
+        role: data.userType, // hr / employee
         image: profileImageURL,
         dateOfBirth: data.dateOfBirth,
       };
 
+      // 5️⃣ HR Extra Data
       if (data.userType === "hr") {
         const companyLogoURL = await imageUpload(data.companyLogo[0]);
-        userData = {
-          ...userData,
-          role: "hr",
-          companyName: data.companyName,
-          companyLogo: companyLogoURL,
-          packageLimit: 5,
-          currentEmployees: 0,
-          subscription: "basic",
-        };
-      } else {
-        userData.role = "employee";
+
+        userData.companyName = data.companyName;
+        userData.companyLogo = companyLogoURL;
+        userData.packageLimit = 5;
+        userData.currentEmployees = 0;
+        userData.subscription = "basic";
       }
 
-      await updateUserProfile(data.name, profileImageURL);
+      console.log("Sending Data to Server:", userData);
 
+      // 6️⃣ Send to Backend Server (POST /register)
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+
+      const resultData = await res.json();
+      console.log(resultData);
+
+      if (!res.ok) {
+        throw new Error(resultData.message || "Failed to register");
+      }
+
+      // 7️⃣ Success
       Swal.fire({ title: "Signup Successful", icon: "success" });
+
       navigate(from, { replace: true });
     } catch (err) {
       Swal.fire({ icon: "error", title: err?.message });
     }
   };
+
+
 
   return (
     <main className="flex-grow min-h-screen flex flex-col justify-center py-12 pt-34 px-4 sm:px-6 lg:px-8 relative">
@@ -92,31 +150,7 @@ const SignUp = () => {
               <label className="block text-sm font-bold mb-3">
                 Select Your Role <span className="text-[#006d6f]">*</span>
               </label>
-
               <div className="grid grid-cols-2 gap-4">
-                {/* Employee */}
-                <div
-                  className={`relative flex flex-col items-center p-4 rounded-lg cursor-pointer transition-all border 
-                  ${
-                    userType !== "hr"
-                      ? "border-[#006d6f] bg-[#006d6f]/10"
-                      : "border-gray-300 hover:border-[#006d6f]"
-                  }`}
-                >
-                  <FaUser className="text-3xl text-[#006d6f] mb-2 bg-[#006d6f]/10 p-2 rounded-full" />
-                  <span className="font-bold text-[#006d6f]">Employee</span>
-                  <span className="text-xs text-gray-500">
-                    Join as an employee
-                  </span>
-
-                  <input
-                    type="radio"
-                    value="employee"
-                    {...register("userType", { required: true })}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </div>
-
                 {/* HR Manager */}
                 <div
                   className={`relative flex flex-col items-center p-4 rounded-lg cursor-pointer transition-all border group 
@@ -141,6 +175,28 @@ const SignUp = () => {
                     className="absolute inset-0 opacity-0 cursor-pointer"
                   />
                 </div>
+                {/* Employee */}
+                <div
+                  className={`relative flex flex-col items-center p-4 rounded-lg cursor-pointer transition-all border 
+                  ${
+                    userType !== "hr"
+                      ? "border-[#006d6f] bg-[#006d6f]/10"
+                      : "border-gray-300 hover:border-[#006d6f]"
+                  }`}
+                >
+                  <FaUser className="text-3xl text-[#006d6f] mb-2 bg-[#006d6f]/10 p-2 rounded-full" />
+                  <span className="font-bold text-[#006d6f]">Employee</span>
+                  <span className="text-xs text-gray-500">
+                    Join as an employee
+                  </span>
+
+                  <input
+                    type="radio"
+                    value="employee"
+                    {...register("userType", { required: true })}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
 
@@ -150,7 +206,7 @@ const SignUp = () => {
                 Full Name *
               </label>
               <div className="relative">
-                <FaUser className="absolute left-3 top-3 text-gray-400" />
+                <FaUser className="absolute left-3 top-4 text-gray-400" />
                 <input
                   {...register("name", { required: true })}
                   placeholder="Enter your full name"
@@ -175,27 +231,27 @@ const SignUp = () => {
             {/* HR Extra Fields */}
             {userType === "hr" && (
               <>
-            {/* Date of Birth */}
-            <div>
-              <label className="block text-sm font-bold mb-2">
-                Date of Birth *
-              </label>
-              <div className="relative">
-                <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
-                <input
-                  type="date"
-                  {...register("dateOfBirth", { required: true })}
-                  className="w-full pl-10 py-2.5 border rounded-md bg-gray-100"
-                />
-              </div>
-            </div>
+                {/* Date of Birth */}
+                <div>
+                  <label className="block text-sm font-bold mb-2">
+                    Date of Birth *
+                  </label>
+                  <div className="relative">
+                    <FaCalendarAlt className="absolute left-3 top-4 text-gray-400" />
+                    <input
+                      type="date"
+                      {...register("dateOfBirth", { required: true })}
+                      className="w-full pl-10 py-2.5 border rounded-md bg-gray-100"
+                    />
+                  </div>
+                </div>
                 {/* Company Name */}
                 <div>
                   <label className="block text-sm font-bold mb-2">
                     Company Name *
                   </label>
                   <div className="relative">
-                    <FaBuilding className="absolute left-3 top-3 text-gray-400" />
+                    <FaBuilding className="absolute left-3 top-4 text-gray-400" />
                     <input
                       {...register("companyName", { required: true })}
                       placeholder="Company Name"
@@ -223,7 +279,7 @@ const SignUp = () => {
             <div>
               <label className="block text-sm font-bold mb-2">Email *</label>
               <div className="relative">
-                <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
+                <FaEnvelope className="absolute left-3 top-4 text-gray-400" />
                 <input
                   {...register("email", { required: true })}
                   placeholder="Enter your email"
@@ -232,12 +288,11 @@ const SignUp = () => {
               </div>
             </div>
 
-
             {/* Password */}
             <div>
               <label className="block text-sm font-bold mb-2">Password *</label>
               <div className="relative">
-                <FaLock className="absolute left-3 top-3 text-gray-400" />
+                <FaLock className="absolute left-3 top-4 text-gray-400" />
 
                 <input
                   type={show ? "text" : "password"}

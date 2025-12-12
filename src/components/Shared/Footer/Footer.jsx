@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router";
 import {
   FaFacebookF,
   FaTwitter,
@@ -60,24 +61,24 @@ const Footer = () => {
 
               <ul className="space-y-3 text-sm text-gray-600">
                 <li>
-                  <a className="hover:text-[#006d6f] transition" href="#">
+                  <NavLink to="/" className="hover:text-[#006d6f] transition">
                     Home
-                  </a>
+                  </NavLink>
                 </li>
                 <li>
-                  <a className="hover:text-[#006d6f] transition" href="#">
+                  <NavLink to="/about" className="hover:text-[#006d6f] transition">
                     About Us
-                  </a>
+                  </NavLink>
                 </li>
                 <li>
-                  <a className="hover:text-[#006d6f] transition" href="#">
+                  <NavLink to="/support" className="hover:text-[#006d6f] transition">
                     Support
-                  </a>
+                  </NavLink>
                 </li>
                 <li>
-                  <a className="hover:text-[#006d6f] transition" href="#">
+                  <NavLink to="/support" className="hover:text-[#006d6f] transition">
                     Contact
-                  </a>
+                  </NavLink>
                 </li>
               </ul>
             </div>
@@ -90,7 +91,7 @@ const Footer = () => {
 
               <ul className="space-y-4 text-sm text-gray-600">
                 <li className="flex items-center gap-3">
-                  <FaPhoneAlt className="text-[#006d6f]" /> +880 1740-000000
+                  <FaPhoneAlt className="text-[#006d6f]" /> +880 1800-000000
                 </li>
                 <li className="flex items-center gap-3">
                   <FaEnvelope className="text-[#006d6f]" />

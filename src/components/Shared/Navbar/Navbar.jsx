@@ -34,6 +34,16 @@ const Navbar = () => {
                     ? "px-4 py-2 text-[#006d6f] bg-[#006d6f]/10 rounded-lg transition font-semibold"
                     : `px-4 py-2 text-gray-700 hover:text-[#006d6f] hover:bg-[#006d6f]/10 rounded-lg transition font-semibold`
                 }
+                to="/"
+              >
+                Home
+              </NavLink>
+              <NavLink
+                className={({ isActive }) =>
+                  isActive
+                    ? "px-4 py-2 text-[#006d6f] bg-[#006d6f]/10 rounded-lg transition font-semibold"
+                    : `px-4 py-2 text-gray-700 hover:text-[#006d6f] hover:bg-[#006d6f]/10 rounded-lg transition font-semibold`
+                }
                 to="/about"
               >
                 About
@@ -80,6 +90,12 @@ const Navbar = () => {
                       className="md:hidden px-4 py-3 hover:bg-[#006d6f]/10 transition font-semibold text-gray-700"
                     >
                       About
+                    </Link>
+                    <Link
+                      to="/support"
+                      className="md:hidden px-4 py-3 hover:bg-[#006d6f]/10 transition font-semibold text-gray-700"
+                    >
+                      Support
                     </Link>
 
                     {user ? (

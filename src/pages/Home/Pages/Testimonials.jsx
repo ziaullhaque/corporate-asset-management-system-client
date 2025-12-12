@@ -16,7 +16,7 @@ const Testimonials = () => {
       role: "Operations Manager",
       user_photoURL: "https://randomuser.me/api/portraits/men/12.jpg",
       review:
-        "AssetVerse completely transformed how we track and manage assets. The automation features saved us hours every week!",
+        "AssetManagement completely transformed how we track and manage assets. The automation features saved us hours every week!",
     },
     {
       id: 2,
@@ -48,7 +48,7 @@ const Testimonials = () => {
       role: "Procurement Lead",
       user_photoURL: "https://randomuser.me/api/portraits/men/56.jpg",
       review:
-        "Extremely user friendly. Our procurement flow is now fully optimized thanks to AssetVerse.",
+        "Extremely user friendly. Our procurement flow is now fully optimized thanks to AssetManagement.",
     },
     {
       id: 6,
@@ -91,7 +91,7 @@ const Testimonials = () => {
         </h3>
 
         <p className="text-[#606060] max-w-2xl mx-auto">
-          Trusted by thousands — here’s how AssetVerse is helping organizations
+          Trusted by thousands — here’s how AssetManagement is helping organizations
           grow faster.
         </p>
       </div>

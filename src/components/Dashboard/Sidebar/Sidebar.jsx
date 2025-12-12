@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import useAuth from "../../../hooks/useAuth";
-import logo from "../../../assets/images/logo.png";
+import Logo from "../../Shared/Logo/Logo";
+// import logo from "../../../assets/images/logo.png";
 // Icons
 import { GrLogout } from "react-icons/gr";
 import { AiOutlineBars } from "react-icons/ai";
@@ -11,10 +12,12 @@ import { CgProfile } from "react-icons/cg";
 import MenuItem from "./Menu/MenuItem";
 import HRMenu from "./Menu/HRMenu";
 import EmployeeMenu from "./Menu/EmployeeMenu";
+// import useRole from "../../../hooks/useRole";
 
 const Sidebar = () => {
   const { logOut } = useAuth();
   const [isActive, setActive] = useState(false);
+  // const {role} = useRole()
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -28,7 +31,8 @@ const Sidebar = () => {
         <div>
           <div className="block cursor-pointer p-4 font-bold">
             <Link to="/">
-              <img src={logo} alt="logo" width="100" height="100" />
+              <Logo size={40} color="#006d6f" />
+              {/* <img src={logo} alt="logo" width="100" height="100" /> */}
             </Link>
           </div>
         </div>
@@ -51,9 +55,9 @@ const Sidebar = () => {
           {/* Top Content */}
           <div>
             {/* Logo */}
-            <div className="w-full hidden md:flex px-4 py-2 shadow-lg rounded-lg justify-center items-center bg-red-100 mx-auto">
+            <div className="w-full hidden md:flex px-4 py-2 shadow-lg rounded-lg justify-center items-center bg-[#006d6f]/10 mx-auto">
               <Link to="/">
-                <img src={logo} alt="logo" width="100" height="100" />
+                <Logo size={40} color="#006d6f" />
               </Link>
             </div>
           </div>
@@ -63,14 +67,17 @@ const Sidebar = () => {
             {/*  Menu Items */}
             <nav>
               {/* Common Menu */}
-              <MenuItem
+              {/* <MenuItem
                 icon={BsGraphUp}
                 label="Statistics"
                 address="/dashboard"
-              />
+              /> */}
               {/* Role Based Menus */}
               <EmployeeMenu />
               <HRMenu />
+              {/* Role Based Menus */}
+              {/* {role === "employee" && <EmployeeMenu />}
+              {role === "hr" && <HRMenu />} */}
             </nav>
           </div>
 
