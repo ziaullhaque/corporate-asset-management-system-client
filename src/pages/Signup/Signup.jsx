@@ -14,22 +14,148 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { imageUpload } from "../../utils";
+import axios from "axios";
 
 const SignUp = () => {
-  const { createUser, updateUserProfile, loading } = useAuth();
-  const [show, setShow] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state || "/";
+    const { createUser, updateUserProfile, loading } = useAuth();
+    const [show, setShow] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state || "/";
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+    // React Hook Form
+    // const {
+    //   register,
+    //   handleSubmit,
+    //   watch,
+    //   formState: { errors },
+    // } = useForm();
+    // console.log(errors);
+    const {
+      register,
+      handleSubmit,
+      watch,
+      formState: { errors },
+    } = useForm({
+      defaultValues: {
+        userType: "employee",
+      },
+    });
 
-  const userType = watch("userType");
+    // HR or Employee
+    const userType = watch("userType");
+    const onSubmit = async (data) => {
+      try {
+        const profileImageURL = await imageUpload(data.image[0]);
+
+        // Firebase user create
+        const result = await createUser(data.email, data.password);
+
+        let userData = {
+          name: data.name,
+          email: data.email,
+          role: data.userType,
+          image: profileImageURL,
+          dateOfBirth: data.dateOfBirth,
+        };
+
+        if (data.userType === "hr") {
+          const companyLogoURL = await imageUpload(data.companyLogo[0]);
+          userData.companyName = data.companyName;
+          userData.companyLogo = companyLogoURL;
+          userData.packageLimit = 5;
+          userData.currentEmployees = 0;
+          userData.subscription = "basic";
+        }
+
+        // 🔥 MongoDB save
+        await axios.post(`${import.meta.env.VITE_API_URL}/users`, userData);
+
+        // Firebase profile update
+        await updateUserProfile(data.name, profileImageURL);
+
+        Swal.fire({ title: "Signup Successful", icon: "success" });
+        navigate(from, { replace: true });
+      } catch (err) {
+        Swal.fire({
+          icon: "error",
+          title: err?.response?.data?.message || err.message,
+        });
+      }
+    };
+
+
+    // const onSubmit = async (data) => {
+    //   const { name, email, password, dateOfBirth } = data;
+    //   // const imageFile = image[0];
+
+    //   // new
+    //   try {
+    //     // profile image upload
+    //     const profileImageURL = await imageUpload(data.image[0]);
+
+    //     // create firebase auth user
+    //     const result = await createUser(email, password);
+    //     console.log(result);
+
+    //     // prepare user data
+    //     let userData = {
+    //       name,
+    //       email,
+    //       image: profileImageURL,
+    //       dateOfBirth,
+    //     };
+
+    //     if (data.userType === "hr") {
+    //       // company logo upload
+    //       const companyLogoURL = await imageUpload(data.companyLogo[0]);
+
+    //       userData = {
+    //         ...userData,
+    //         role: "hr",
+    //         companyName: data.companyName,
+    //         companyLogo: companyLogoURL,
+    //         packageLimit: 5,
+    //         currentEmployees: 0,
+    //         subscription: "basic",
+    //       };
+    //     } else {
+    //       // employee
+    //       userData.role = "employee";
+    //     }
+    //     console.log(userData);
+    //     // save to database
+    //     // await saveOrUpdateUser(userData);
+
+    //     // update firebase profile
+    //     await updateUserProfile(name, profileImageURL);
+
+    //     navigate(from, { replace: true });
+    //     Swal.fire({
+    //       title: "Signup Successful",
+    //       icon: "success",
+    //     });
+    //   } catch (err) {
+    //     Swal.fire({
+    //       icon: "error",
+    //       title: err?.message,
+    //     });
+    //   }
+    // };
+  // const { createUser, updateUserProfile, loading } = useAuth();
+  // const [show, setShow] = useState(false);
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const from = location.state || "/";
+
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   watch,
+  //   formState: { errors },
+  // } = useForm();
+
+  // const userType = watch("userType");
 
   // const onSubmit = async (data) => {
   //   try {
@@ -67,63 +193,56 @@ const SignUp = () => {
   //     Swal.fire({ icon: "error", title: err?.message });
   //   }
   // };
-  const onSubmit = async (data) => {
-    try {
-      // 1️⃣ Upload Profile Image
-      const profileImageURL = await imageUpload(data.image[0]);
 
-      // 2️⃣ Create Firebase User
-      const result = await createUser(data.email, data.password);
+  // const onSubmit = async (data) => {
+  //   try {
+  //     const profileImageURL = await imageUpload(data.image[0]);
+  //     const result = await createUser(data.email, data.password);
+  //     await updateUserProfile(data.name, profileImageURL);
 
-      // 3️⃣ Update Firebase Profile (Name + Photo)
-      await updateUserProfile(data.name, profileImageURL);
+  //     //  Prepare User Data for Server
+  //     let userData = {
+  //       name: data.name,
+  //       email: data.email,
+  //       role: data.userType, // hr / employee
+  //       image: profileImageURL,
+  //       dateOfBirth: data.dateOfBirth,
+  //     };
 
-      // 4️⃣ Prepare User Data for Server
-      let userData = {
-        name: data.name,
-        email: data.email,
-        role: data.userType, // hr / employee
-        image: profileImageURL,
-        dateOfBirth: data.dateOfBirth,
-      };
+  //     //  HR Extra Data
+  //     if (data.userType === "hr") {
+  //       const companyLogoURL = await imageUpload(data.companyLogo[0]);
 
-      // 5️⃣ HR Extra Data
-      if (data.userType === "hr") {
-        const companyLogoURL = await imageUpload(data.companyLogo[0]);
+  //       userData.companyName = data.companyName;
+  //       userData.companyLogo = companyLogoURL;
+  //       userData.packageLimit = 5;
+  //       userData.currentEmployees = 0;
+  //       userData.subscription = "basic";
+  //     }
 
-        userData.companyName = data.companyName;
-        userData.companyLogo = companyLogoURL;
-        userData.packageLimit = 5;
-        userData.currentEmployees = 0;
-        userData.subscription = "basic";
-      }
+  //     console.log("Sending Data to Server:", userData);
 
-      console.log("Sending Data to Server:", userData);
+  //     //  Send to Backend Server (POST /register)
+  //     const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(userData),
+  //     });
 
-      // 6️⃣ Send to Backend Server (POST /register)
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
-      });
+  //     const resultData = await res.json();
+  //     console.log(resultData);
 
-      const resultData = await res.json();
-      console.log(resultData);
+  //     if (!res.ok) {
+  //       throw new Error(resultData.message || "Failed to register");
+  //     }
 
-      if (!res.ok) {
-        throw new Error(resultData.message || "Failed to register");
-      }
+  //     Swal.fire({ title: "Signup Successful", icon: "success" });
 
-      // 7️⃣ Success
-      Swal.fire({ title: "Signup Successful", icon: "success" });
-
-      navigate(from, { replace: true });
-    } catch (err) {
-      Swal.fire({ icon: "error", title: err?.message });
-    }
-  };
-
-
+  //     navigate(from, { replace: true });
+  //   } catch (err) {
+  //     Swal.fire({ icon: "error", title: err?.message });
+  //   }
+  // };
 
   return (
     <main className="flex-grow min-h-screen flex flex-col justify-center py-12 pt-34 px-4 sm:px-6 lg:px-8 relative">
@@ -167,13 +286,22 @@ const SignUp = () => {
                   <span className="text-xs text-gray-500">
                     Manage company assets
                   </span>
-
                   <input
+                    type="radio"
+                    value="hr"
+                    {...register("userType", {
+                      required: "Please select a role",
+                    })}
+                    checked={userType === "hr"}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+
+                  {/* <input
                     type="radio"
                     value="hr"
                     {...register("userType", { required: true })}
                     className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
+                  /> */}
                 </div>
                 {/* Employee */}
                 <div
@@ -189,13 +317,22 @@ const SignUp = () => {
                   <span className="text-xs text-gray-500">
                     Join as an employee
                   </span>
-
                   <input
+                    type="radio"
+                    value="employee"
+                    {...register("userType", {
+                      required: "Please select a role",
+                    })}
+                    checked={userType === "employee"}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+
+                  {/* <input
                     type="radio"
                     value="employee"
                     {...register("userType", { required: true })}
                     className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -227,10 +364,6 @@ const SignUp = () => {
                 className="w-full bg-gray-100 border border-dashed border-[#006d6f] rounded-md p-2"
               />
             </div>
-
-            {/* HR Extra Fields */}
-            {userType === "hr" && (
-              <>
                 {/* Date of Birth */}
                 <div>
                   <label className="block text-sm font-bold mb-2">
@@ -245,6 +378,10 @@ const SignUp = () => {
                     />
                   </div>
                 </div>
+
+            {/* HR Extra Fields */}
+            {userType === "hr" && (
+              <>
                 {/* Company Name */}
                 <div>
                   <label className="block text-sm font-bold mb-2">

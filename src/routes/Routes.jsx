@@ -17,6 +17,7 @@ import ErrorPage from "../pages/Error/ErrorPage";
 import Home from "../pages/Home/Home";
 import About from "../pages/Home/Pages/About";
 import Support from "../pages/Home/Pages/Support";
+import UpdateProfile from "../pages/Dashboard/Common/UpdateProfile";
 
 export const router = createBrowserRouter([
   {
@@ -120,6 +121,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "update-profile",
+        element: (
+          <PrivateRoute>
+            <UpdateProfile />
           </PrivateRoute>
         ),
       },
